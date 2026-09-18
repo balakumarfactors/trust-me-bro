@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Trust Me Bro — Reddit's Most-Loved Game Recommendations</title>
+<meta name="description" content="Every game recommended in r/videogames' 'Trust me bro' thread, ranked by Steam reviews and Metacritic critic scores." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-card: #161b22;
+    --bg-elev: #1c2128;
+    --border: #30363d;
+    --border-soft: #21262d;
+    --text: #e6edf3;
+    --text-muted: #7d8590;
+    --text-dim: #6e7681;
+    --accent: #58a6ff;
+    --accent-glow: rgba(88, 166, 255, 0.15);
+    --steam: #66c0f4;
+    --metacritic-gold: #ffbc2c;
+    --metacritic-green: #66c0f4;
+    --metacritic-yellow: #f5c518;
+    --metacritic-red: #ee0000;
+    --good: #3fb950;
+    --great: #2ea043;
+    --meh: #d29922;
+    --bad: #f85149;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(88,166,255,0.12), transparent),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(63,185,80,0.06), transparent);
+  }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+  /* HERO */
+  .hero {
+    padding: 80px 0 60px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .hero .badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(88,166,255,0.3);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 24px;
+    letter-spacing: 0.3px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 6vw, 72px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+    background: linear-gradient(135deg, #fff 0%, #58a6ff 50%, #3fb950 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 18px;
+  }
+  .hero .sub {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--text-muted);
+    max-width: 640px;
+    margin: 0 auto 32px;
+  }
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+  .stat .num {
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--steam), var(--metacritic-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stat .lbl {
+    font-size: 13px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 4px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border-soft);
+    position: sticky;
+    top: 0;
+    background: rgba(13, 17, 23, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 10;
+  }
+  .controls-inner {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .search {
+    flex: 1;
+    min-width: 240px;
+    position: relative;
+  }
+  .search input {
+    width: 100%;
+    padding: 12px 16px 12px 44px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .search input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .search svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+  }
+  .sort-buttons {
+    display: flex;
+    gap: 6px;
+    background: var(--bg-card);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .sort-btn {
+    padding: 8px 14px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .sort-btn:hover { color: var(--text); }
+  .sort-btn.active {
+    background: var(--bg-elev);
+    color: var(--text);
+    box-shadow: 0 0 0 1px var(--border);
+  }
+
+  /* TABLE */
+  .table-section { padding: 40px 0 80px; }
+  .table-header {
+    display: grid;
+    grid-template-columns: 50px 1fr 110px 110px 110px 90px;
+    gap: 16px;
+    padding: 12px 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .games { display: flex; flex-direction: column; }
+  .game-row {
+    display: grid;
+    grid-template-columns: 50px 1fr 110px 110px 110px 90px;
+    gap: 16px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border-soft);
+    align-items: center;
+    transition: background 0.1s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .game-row:hover {
+    background: var(--bg-card);
+  }
+  .rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+  .game-info { min-width: 0; }
+  .game-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .game-links {
+    margin-top: 4px;
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+  }
+  .game-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s;
+  }
+  .game-links a:hover { color: var(--accent); }
+  .game-links svg { width: 12px; height: 12px; }
+
+  /* RATING PILLS */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    width: fit-content;
+  }
+  .pill.steam {
+    background: rgba(102, 192, 244, 0.1);
+    color: var(--steam);
+    border: 1px solid rgba(102, 192, 244, 0.25);
+  }
+  .pill.steam .pct { font-size: 14px; }
+  .pill.steam .lbl { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+  .pill.mc {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    color: var(--metacritic-yellow);
+    font-size: 16px;
+  }
+  .pill.mc.green { background: rgba(102, 192, 244, 0.12); border-color: rgba(102, 192, 244, 0.3); color: var(--metacritic-green); }
+  .pill.mc.gold { background: rgba(255, 188, 44, 0.12); border-color: rgba(255, 188, 44, 0.3); color: var(--metacritic-gold); }
+  .pill.mc.red { background: rgba(248, 81, 73, 0.12); border-color: rgba(248, 81, 73, 0.3); color: var(--bad); }
+  .pill.none {
+    background: var(--bg-elev);
+    border: 1px dashed var(--border);
+    color: var(--text-dim);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  /* SCORE BARS */
+  .score-cell { display: flex; flex-direction: column; gap: 4px; }
+  .bar {
+    height: 4px;
+    background: var(--bg-elev);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill { height: 100%; border-radius: 2px; }
+
+  /* PRICE */
+  .price {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    text-align: right;
+  }
+  .price.free { color: var(--good); }
+
+  /* HIGHLIGHTS */
+  .highlights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    padding: 32px 0;
+    border-top: 1px solid var(--border-soft);
+  }
+  .highlight-card {
+    padding: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+  }
+  .highlight-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+  .highlight-card .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .highlight-card .title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .highlight-card .scores {
+    display: flex;
+    gap: 10px;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border-soft);
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  /* EMPTY STATE */
+  .empty {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .hero { padding: 50px 0 40px; }
+    .stats { gap: 32px; }
+    .stat .num { font-size: 28px; }
+    .table-header { display: none; }
+    .game-row {
+      grid-template-columns: 40px 1fr;
+      grid-template-rows: auto auto;
+      gap: 12px;
+      padding: 16px;
+    }
+    .rank { grid-row: 1 / 3; }
+    .game-info { grid-column: 2; }
+    .score-cell { grid-column: 2; flex-direction: row; gap: 12px; flex-wrap: wrap; }
+    .price { grid-column: 2; text-align: left; }
+    .pill.mc { font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="container">
+    <div class="badge">r/videogames · Curated Picks</div>
+    <h1>Trust Me Bro</h1>
+    <p class="sub">Every game recommended in Reddit's "trust me bro" thread — sorted by how much players and critics actually agree they're good.</p>
+    <div class="stats">
+      <div class="stat"><div class="num" id="stat-games">—</div><div class="lbl">Games</div></div>
+      <div class="stat"><div class="num" id="stat-comments">73</div><div class="lbl">Comments</div></div>
+      <div class="stat"><div class="num" id="stat-rated">—</div><div class="lbl">Fully Rated</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="controls">
+  <div class="container">
+    <div class="controls-inner">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="search-input" placeholder="Search 79 games..." autocomplete="off" />
+      </div>
+      <div class="sort-buttons" role="tablist">
+        <button class="sort-btn active" data-sort="steam">Steam %</button>
+        <button class="sort-btn" data-sort="mc">Metacritic</button>
+        <button class="sort-btn" data-sort="name">A-Z</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="table-section">
+  <div class="container">
+    <div class="table-header">
+      <div>#</div>
+      <div>Game</div>
+      <div>Steam</div>
+      <div>Metacritic</div>
+      <div>Score Bars</div>
+      <div style="text-align:right">Price</div>
+    </div>
+    <div class="games" id="games-list"></div>
+  </div>
+</section>
+
+<section class="container" id="highlights-section" style="display:none">
+  <div class="highlights" id="highlights"></div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>
+      Built by scraping
+      <a href="https://www.reddit.com/r/videogames/comments/1wjpk6n/every_trust_me_bro_game_recommendation/" target="_blank" rel="noopener">the Reddit thread</a>
+      · Ratings from
+      <a href="https://store.steampowered.com" target="_blank" rel="noopener">Steam</a> &
+      <a href="https://www.metacritic.com" target="_blank" rel="noopener">Metacritic</a>
+    </p>
+    <p style="margin-top:8px;opacity:0.6">Not affiliated with Reddit, Valve, or Metacritic.</p>
+  </div>
+</footer>
+
+<script>
+const GAMES = [{"thread_name": "Frog Fractions", "steam_name": "Frog Fractions: Game of the Decade Edition", "steam_id": 1194840, "steam_url": "https://store.steampowered.com/app/1194840/", "steam_price": "Free", "steam_score": "Very Positive", "steam_positive_pct": 100.0, "steam_total": 84, "mc_overall_score": null, "mc_sentiment": null, "mc_review_count": null, "mc_url": null}, {"thread_name": "A Short Hike", "steam_name": "A Short Hike", "steam_id": 1055540, "steam_url": "https://store.steampowered.com/app/1055540/", "steam_price": "$7.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 99.1, "steam_total": 19208, "mc_overall_score": 88, "mc_sentiment": "Generally favorable", "mc_review_count": 17, "mc_url": "https://www.metacritic.com/game/a-short-hike/"}, {"thread_name": "Stardew Valley", "steam_name": "Stardew Valley", "steam_id": 413150, "steam_url": "https://store.steampowered.com/app/413150/", "steam_price": "$14.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 98.5, "steam_total": 893878, "mc_overall_score": 89, "mc_sentiment": "Generally favorable", "mc_review_count": 32, "mc_url": "https://www.metacritic.com/game/stardew-valley/"}, {"thread_name": "Vampire Survivors", "steam_name": "Vampire Survivors", "steam_id": 1794680, "steam_url": "https://store.steampowered.com/app/1794680/", "steam_price": "$4.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 98.4, "steam_total": 251643, "mc_overall_score": 86, "mc_sentiment": "Generally favorable", "mc_review_count": 31, "mc_url": "https://www.metacritic.com/game/vampire-survivors/"}, {"thread_name": "Crow Country", "steam_name": "Crow Country", "steam_id": 1996010, "steam_url": "https://store.steampowered.com/app/1996010/", "steam_price": "$19.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 98.0, "steam_total": 7734, "mc_overall_score": 84, "mc_sentiment": "Generally favorable", "mc_review_count": 31, "mc_url": "https://www.metacritic.com/game/crow-country/"}, {"thread_name": "Hades", "steam_name": "Hades", "steam_id": 1145360, "steam_url": "https://store.steampowered.com/app/1145360/", "steam_price": "$24.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 98.0, "steam_total": 285631, "mc_overall_score": 93, "mc_sentiment": "Universal acclaim", "mc_review_count": 61, "mc_url": "https://www.metacritic.com/game/hades/"}, {"thread_name": "Neon White", "steam_name": "Neon White", "steam_id": 1533420, "steam_url": "https://store.steampowered.com/app/1533420/", "steam_price": "$24.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 98.0, "steam_total": 17258, "mc_overall_score": 89, "mc_sentiment": "Generally favorable", "mc_review_count": 44, "mc_url": "https://www.metacritic.com/game/neon-white/"}, {"thread_name": "Balatro", "steam_name": "Balatro", "steam_id": 2379780, "steam_url": "https://store.steampowered.com/app/2379780/", "steam_price": "$14.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 97.8, "steam_total": 160640, "mc_overall_score": 90, "mc_sentiment": "Universal acclaim", "mc_review_count": 35, "mc_url": "https://www.metacritic.com/game/balatro/"}, {"thread_name": "RimWorld", "steam_name": "RimWorld", "steam_id": 294100, "steam_url": "https://store.steampowered.com/app/294100/", "steam_price": "$27.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 97.8, "steam_total": 208608, "mc_overall_score": 87, "mc_sentiment": "Generally favorable", "mc_review_count": 9, "mc_url": "https://www.metacritic.com/game/rimworld/"}, {"thread_name": "Ultrakill", "steam_name": "ULTRAKILL", "steam_id": 1229490, "steam_url": "https://store.steampowered.com/app/1229490/", "steam_price": "$22.49", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 97.5, "steam_total": 213320, "mc_overall_score": null, "mc_sentiment": null, "mc_review_count": null, "mc_url": "https://www.metacritic.com/game/ultrakill/"}, {"thread_name": "Celeste", "steam_name": "Celeste", "steam_id": 504230, "steam_url": "https://store.steampowered.com/app/504230/", "steam_price": "$19.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 97.5, "steam_total": 132063, "mc_overall_score": 92, "mc_sentiment": "Universal acclaim", "mc_review_count": 37, "mc_url": "https://www.metacritic.com/game/celeste/"}, {"thread_name": "Resident Evil 4", "steam_name": "Resident Evil 4", "steam_id": 2050650, "steam_url": "https://store.steampowered.com/app/2050650/", "steam_price": "$9.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 97.4, "steam_total": 186660, "mc_overall_score": 93, "mc_sentiment": "Universal acclaim", "mc_review_count": 133, "mc_url": "https://www.metacritic.com/game/resident-evil-4/"}, {"thread_name": "Opus Magnum", "steam_name": "Opus Magnum", "steam_id": 558990, "steam_url": "https://store.steampowered.com/app/558990/", "steam_price": "$19.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 97.2, "steam_total": 5968, "mc_overall_score": 90, "mc_sentiment": "Universal acclaim", "mc_review_count": 4, "mc_url": "https://www.metacritic.com/game/opus-magnum/"}, {"thread_name": "SANABI", "steam_name": "SANABI", "steam_id": 1562700, "steam_url": "https://store.steampowered.com/app/1562700/", "steam_price": "$9.74", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 97.2, "steam_total": 41683, "mc_overall_score": 83, "mc_sentiment": "Generally favorable", "mc_review_count": 7, "mc_url": "https://www.metacritic.com/game/sanabi/"}, {"thread_name": "Resident Evil 2", "steam_name": "Resident Evil 2", "steam_id": 883710, "steam_url": "https://store.steampowered.com/app/883710/", "steam_price": "$7.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 97.1, "steam_total": 155991, "mc_overall_score": 91, "mc_sentiment": "Universal acclaim", "mc_review_count": 94, "mc_url": "https://www.metacritic.com/game/resident-evil-2/"}, {"thread_name": "Inscryption", "steam_name": "Inscryption", "steam_id": 1092790, "steam_url": "https://store.steampowered.com/app/1092790/", "steam_price": "$19.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 96.8, "steam_total": 134996, "mc_overall_score": 85, "mc_sentiment": "Generally favorable", "mc_review_count": 54, "mc_url": "https://www.metacritic.com/game/inscryption/"}, {"thread_name": "Baldur's Gate 3", "steam_name": "Baldur's Gate 3", "steam_id": 1086940, "steam_url": "https://store.steampowered.com/app/1086940/", "steam_price": "$41.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 96.8, "steam_total": 754916, "mc_overall_score": 96, "mc_sentiment": "Universal acclaim", "mc_review_count": 119, "mc_url": "https://www.metacritic.com/game/baldurs-gate-3/"}, {"thread_name": "Return of the Obra Dinn", "steam_name": "Return of the Obra Dinn", "steam_id": 653530, "steam_url": "https://store.steampowered.com/app/653530/", "steam_price": "$19.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 96.6, "steam_total": 32290, "mc_overall_score": 89, "mc_sentiment": "Generally favorable", "mc_review_count": 39, "mc_url": "https://www.metacritic.com/game/return-of-the-obra-dinn/"}, {"thread_name": "Slay the Princess", "steam_name": "Slay the Princess \u2014 The Pristine Cut", "steam_id": 1989270, "steam_url": "https://store.steampowered.com/app/1989270/", "steam_price": "$8.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 96.6, "steam_total": 31871, "mc_overall_score": 90, "mc_sentiment": "Universal acclaim", "mc_review_count": 24, "mc_url": "https://www.metacritic.com/game/slay-the-princess/"}, {"thread_name": "Hypnospace Outlaw", "steam_name": "Hypnospace Outlaw", "steam_id": 844590, "steam_url": "https://store.steampowered.com/app/844590/", "steam_price": "$19.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 96.6, "steam_total": 4822, "mc_overall_score": 83, "mc_sentiment": "Generally favorable", "mc_review_count": 22, "mc_url": "https://www.metacritic.com/game/hypnospace-outlaw/"}, {"thread_name": "Signalis", "steam_name": "SIGNALIS", "steam_id": 1262350, "steam_url": "https://store.steampowered.com/app/1262350/", "steam_price": "$13.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 96.6, "steam_total": 30588, "mc_overall_score": null, "mc_sentiment": null, "mc_review_count": null, "mc_url": null}, {"thread_name": "Metal: Hellsinger", "steam_name": "Metal: Hellsinger", "steam_id": 1061910, "steam_url": "https://store.steampowered.com/app/1061910/", "steam_price": "$29.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 96.2, "steam_total": 13987, "mc_overall_score": 79, "mc_sentiment": "Generally favorable", "mc_review_count": 67, "mc_url": "https://www.metacritic.com/game/metal-hellsinger/"}, {"thread_name": "God of War (2018)", "steam_name": "God of War", "steam_id": 1593500, "steam_url": "https://store.steampowered.com/app/1593500/", "steam_price": "$49.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 96.0, "steam_total": 129664, "mc_overall_score": 94, "mc_sentiment": "Universal acclaim", "mc_review_count": 131, "mc_url": "https://www.metacritic.com/game/god-of-war/"}, {"thread_name": "Brotato", "steam_name": "Brotato", "steam_id": 1942280, "steam_url": "https://store.steampowered.com/app/1942280/", "steam_price": "$4.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 96.0, "steam_total": 111355, "mc_overall_score": 76, "mc_sentiment": "Generally favorable", "mc_review_count": 4, "mc_url": "https://www.metacritic.com/game/brotato/"}, {"thread_name": "1000xRESIST", "steam_name": "1000xRESIST", "steam_id": 1675830, "steam_url": "https://store.steampowered.com/app/1675830/", "steam_price": "$19.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 96.0, "steam_total": 5307, "mc_overall_score": 86, "mc_sentiment": "Generally favorable", "mc_review_count": 17, "mc_url": "https://www.metacritic.com/game/1000xresist/"}, {"thread_name": "Abiotic Factor", "steam_name": "Abiotic Factor", "steam_id": 427410, "steam_url": "https://store.steampowered.com/app/427410/", "steam_price": "$34.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 95.9, "steam_total": 42049, "mc_overall_score": 88, "mc_sentiment": "Generally favorable", "mc_review_count": 7, "mc_url": "https://www.metacritic.com/game/abiotic-factor/"}, {"thread_name": "SOMA", "steam_name": "SOMA", "steam_id": 282140, "steam_url": "https://store.steampowered.com/app/282140/", "steam_price": "$29.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 95.8, "steam_total": 46774, "mc_overall_score": 84, "mc_sentiment": "Generally favorable", "mc_review_count": 70, "mc_url": "https://www.metacritic.com/game/soma/"}, {"thread_name": "Titanfall 2", "steam_name": "Titanfall\u00ae 2", "steam_id": 1237970, "steam_url": "https://store.steampowered.com/app/1237970/", "steam_price": "$4.49", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 95.7, "steam_total": 254992, "mc_overall_score": 89, "mc_sentiment": "Generally favorable", "mc_review_count": 64, "mc_url": "https://www.metacritic.com/game/titanfall-2/"}, {"thread_name": "Resident Evil Village", "steam_name": "Resident Evil Village", "steam_id": 1196590, "steam_url": "https://store.steampowered.com/app/1196590/", "steam_price": "$9.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 95.7, "steam_total": 106399, "mc_overall_score": 84, "mc_sentiment": "Generally favorable", "mc_review_count": 119, "mc_url": "https://www.metacritic.com/game/resident-evil-village/"}, {"thread_name": "What Remains of Edith Finch", "steam_name": "What Remains of Edith Finch", "steam_id": 501300, "steam_url": "https://store.steampowered.com/app/501300/", "steam_price": "$19.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 95.5, "steam_total": 47025, "mc_overall_score": 88, "mc_sentiment": "Generally favorable", "mc_review_count": 68, "mc_url": "https://www.metacritic.com/game/what-remains-of-edith-finch/"}, {"thread_name": "Outer Wilds", "steam_name": "Outer Wilds", "steam_id": 753640, "steam_url": "https://store.steampowered.com/app/753640/", "steam_price": "$24.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 95.5, "steam_total": 89479, "mc_overall_score": 85, "mc_sentiment": "Generally favorable", "mc_review_count": 33, "mc_url": "https://www.metacritic.com/game/outer-wilds/"}, {"thread_name": "Resident Evil 7", "steam_name": "Resident Evil 7 Biohazard", "steam_id": 418370, "steam_url": "https://store.steampowered.com/app/418370/", "steam_price": "$7.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 95.4, "steam_total": 87783, "mc_overall_score": 86, "mc_sentiment": "Generally favorable", "mc_review_count": 108, "mc_url": "https://www.metacritic.com/game/resident-evil-7-biohazard/"}, {"thread_name": "Expedition 33", "steam_name": "Clair Obscur: Expedition 33", "steam_id": 1903340, "steam_url": "https://store.steampowered.com/app/1903340/", "steam_price": "$39.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 95.1, "steam_total": 181389, "mc_overall_score": 92, "mc_sentiment": "Universal acclaim", "mc_review_count": 86, "mc_url": "https://www.metacritic.com/game/clair-obscur-expedition-33/"}, {"thread_name": "Ostriv", "steam_name": "Ostriv", "steam_id": 1205520, "steam_url": "https://store.steampowered.com/app/1205520/", "steam_price": "$19.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 95.1, "steam_total": 9234, "mc_overall_score": null, "mc_sentiment": null, "mc_review_count": null, "mc_url": "https://www.metacritic.com/game/ostriv/"}, {"thread_name": "Bastion", "steam_name": "Bastion", "steam_id": 107100, "steam_url": "https://store.steampowered.com/app/107100/", "steam_price": "$14.99", "steam_score": "Overwhelmingly Positive", "steam_positive_pct": 95.0, "steam_total": 28219, "mc_overall_score": 86, "mc_sentiment": "Generally favorable", "mc_review_count": 79, "mc_url": "https://www.metacritic.com/game/bastion/"}, {"thread_name": "SpiritFarer", "steam_name": "Spiritfarer\u00ae: Farewell Edition", "steam_id": 972660, "steam_url": "https://store.steampowered.com/app/972660/", "steam_price": "$29.99", "steam_score": "Very Positive", "steam_positive_pct": 94.9, "steam_total": 47149, "mc_overall_score": 84, "mc_sentiment": "Generally favorable", "mc_review_count": 37, "mc_url": "https://www.metacritic.com/game/spiritfarer/"}, {"thread_name": "Cat Quest", "steam_name": "Cat Quest", "steam_id": 593280, "steam_url": "https://store.steampowered.com/app/593280/", "steam_price": "$12.99", "steam_score": "Very Positive", "steam_positive_pct": 94.9, "steam_total": 8367, "mc_overall_score": 74, "mc_sentiment": "Mixed or average", "mc_review_count": 19, "mc_url": "https://www.metacritic.com/game/cat-quest/"}, {"thread_name": "FTL: Faster Than Light", "steam_name": "FTL: Faster Than Light", "steam_id": 212680, "steam_url": "https://store.steampowered.com/app/212680/", "steam_price": "$1.99", "steam_score": "Very Positive", "steam_positive_pct": 94.9, "steam_total": 62755, "mc_overall_score": 84, "mc_sentiment": "Generally favorable", "mc_review_count": 42, "mc_url": "https://www.metacritic.com/game/ftl-faster-than-light/"}, {"thread_name": "Night in the Woods", "steam_name": "Night in the Woods", "steam_id": 481510, "steam_url": "https://store.steampowered.com/app/481510/", "steam_price": "$19.99", "steam_score": "Very Positive", "steam_positive_pct": 94.7, "steam_total": 17747, "mc_overall_score": 88, "mc_sentiment": "Generally favorable", "mc_review_count": 38, "mc_url": "https://www.metacritic.com/game/night-in-the-woods/"}, {"thread_name": "Palworld", "steam_name": "Palworld", "steam_id": 1623730, "steam_url": "https://store.steampowered.com/app/1623730/", "steam_price": "$29.99", "steam_score": "Very Positive", "steam_positive_pct": 94.6, "steam_total": 411711, "mc_overall_score": 79, "mc_sentiment": "Generally favorable", "mc_review_count": 17, "mc_url": "https://www.metacritic.com/game/palworld/"}, {"thread_name": "Megabonk", "steam_name": "Megabonk", "steam_id": 3405340, "steam_url": "https://store.steampowered.com/app/3405340/", "steam_price": "$5.99", "steam_score": "Very Positive", "steam_positive_pct": 94.3, "steam_total": 99804, "mc_overall_score": 88, "mc_sentiment": "Generally favorable", "mc_review_count": 5, "mc_url": "https://www.metacritic.com/game/megabonk/"}, {"thread_name": "Earth Defense Force 5", "steam_name": "EARTH DEFENSE FORCE 5", "steam_id": 1007040, "steam_url": "https://store.steampowered.com/app/1007040/", "steam_price": "$59.99", "steam_score": "Very Positive", "steam_positive_pct": 94.0, "steam_total": 9372, "mc_overall_score": 72, "mc_sentiment": "Mixed or average", "mc_review_count": 44, "mc_url": "https://www.metacritic.com/game/earth-defense-force-5/"}, {"thread_name": "Valheim", "steam_name": "Valheim", "steam_id": 892970, "steam_url": "https://store.steampowered.com/app/892970/", "steam_price": "$29.99", "steam_score": "Very Positive", "steam_positive_pct": 94.0, "steam_total": 465345, "mc_overall_score": 89, "mc_sentiment": "Generally favorable", "mc_review_count": 18, "mc_url": "https://www.metacritic.com/game/valheim/"}, {"thread_name": "Trails in the Sky", "steam_name": "The Legend of Heroes: Trails in the Sky", "steam_id": 251150, "steam_url": "https://store.steampowered.com/app/251150/", "steam_price": "$19.99", "steam_score": "Very Positive", "steam_positive_pct": 94.0, "steam_total": 8800, "mc_overall_score": 79, "mc_sentiment": "Generally favorable", "mc_review_count": 22, "mc_url": "https://www.metacritic.com/game/the-legend-of-heroes-trails-in-the-sky/"}, {"thread_name": "Thief II: The Metal Age", "steam_name": "Thief II: The Metal Age", "steam_id": 211740, "steam_url": "https://store.steampowered.com/app/211740/", "steam_price": "$6.99", "steam_score": "Very Positive", "steam_positive_pct": 93.9, "steam_total": 1939, "mc_overall_score": 87, "mc_sentiment": "Generally favorable", "mc_review_count": 18, "mc_url": "https://www.metacritic.com/game/thief-ii-the-metal-age/"}, {"thread_name": "Elden Ring", "steam_name": "ELDEN RING", "steam_id": 1245620, "steam_url": "https://store.steampowered.com/app/1245620/", "steam_price": "$59.99", "steam_score": "Very Positive", "steam_positive_pct": 93.2, "steam_total": 831291, "mc_overall_score": 96, "mc_sentiment": "Universal acclaim", "mc_review_count": 93, "mc_url": "https://www.metacritic.com/game/elden-ring/"}, {"thread_name": "A Plague Tale: Innocence", "steam_name": "A Plague Tale: Innocence", "steam_id": 752590, "steam_url": "https://store.steampowered.com/app/752590/", "steam_price": "$39.99", "steam_score": "Very Positive", "steam_positive_pct": 93.1, "steam_total": 63181, "mc_overall_score": 81, "mc_sentiment": "Generally favorable", "mc_review_count": 65, "mc_url": "https://www.metacritic.com/game/a-plague-tale-innocence/"}, {"thread_name": "Death's Door", "steam_name": "Death's Door", "steam_id": 894020, "steam_url": "https://store.steampowered.com/app/894020/", "steam_price": "$19.99", "steam_score": "Very Positive", "steam_positive_pct": 93.1, "steam_total": 19331, "mc_overall_score": 85, "mc_sentiment": "Generally favorable", "mc_review_count": 61, "mc_url": "https://www.metacritic.com/game/deaths-door/"}, {"thread_name": "Pit People", "steam_name": "Pit People\u00ae", "steam_id": 291860, "steam_url": "https://store.steampowered.com/app/291860/", "steam_price": "$19.99", "steam_score": "Very Positive", "steam_positive_pct": 92.7, "steam_total": 7456, "mc_overall_score": 78, "mc_sentiment": "Generally favorable", "mc_review_count": 16, "mc_url": "https://www.metacritic.com/game/pit-people/"}, {"thread_name": "\u014ckami", "steam_name": "Okami HD", "steam_id": 587620, "steam_url": "https://store.steampowered.com/app/587620/", "steam_price": "$19.99", "steam_score": "Very Positive", "steam_positive_pct": 92.7, "steam_total": 8227, "mc_overall_score": 93, "mc_sentiment": "Universal acclaim", "mc_review_count": 69, "mc_url": "https://www.metacritic.com/game/okami/"}, {"thread_name": "Disco Elysium", "steam_name": "Disco Elysium - The Final Cut", "steam_id": 632470, "steam_url": "https://store.steampowered.com/app/632470/", "steam_price": "$39.99", "steam_score": "Very Positive", "steam_positive_pct": 92.6, "steam_total": 118087, "mc_overall_score": 91, "mc_sentiment": "Universal acclaim", "mc_review_count": 70, "mc_url": "https://www.metacritic.com/game/disco-elysium/"}, {"thread_name": "Red Dead Redemption 2", "steam_name": "Red Dead Redemption 2", "steam_id": 1174180, "steam_url": "https://store.steampowered.com/app/1174180/", "steam_price": "$59.99", "steam_score": "Very Positive", "steam_positive_pct": 92.5, "steam_total": 845876, "mc_overall_score": 97, "mc_sentiment": "Universal acclaim", "mc_review_count": 109, "mc_url": "https://www.metacritic.com/game/red-dead-redemption-2/"}, {"thread_name": "The Stanley Parable", "steam_name": "The Stanley Parable", "steam_id": 221910, "steam_url": "https://store.steampowered.com/app/221910/", "steam_price": "$14.99", "steam_score": "Very Positive", "steam_positive_pct": 92.4, "steam_total": 40286, "mc_overall_score": 88, "mc_sentiment": "Generally favorable", "mc_review_count": 47, "mc_url": "https://www.metacritic.com/game/the-stanley-parable/"}, {"thread_name": "Pathologic", "steam_name": "Pathologic 2", "steam_id": 505230, "steam_url": "https://store.steampowered.com/app/505230/", "steam_price": "$6.99", "steam_score": "Very Positive", "steam_positive_pct": 92.1, "steam_total": 9549, "mc_overall_score": 70, "mc_sentiment": "Mixed or average", "mc_review_count": 29, "mc_url": "https://www.metacritic.com/game/pathologic-2/"}, {"thread_name": "Dishonored", "steam_name": "Dishonored\u00ae", "steam_id": 238010, "steam_url": "https://store.steampowered.com/app/238010/", "steam_price": "$1.99", "steam_score": "Very Positive", "steam_positive_pct": 91.9, "steam_total": 25394, "mc_overall_score": 88, "mc_sentiment": "Generally favorable", "mc_review_count": 56, "mc_url": "https://www.metacritic.com/game/dishonored/"}, {"thread_name": "Darkest Dungeon", "steam_name": "Darkest Dungeon\u00ae", "steam_id": 262060, "steam_url": "https://store.steampowered.com/app/262060/", "steam_price": "$24.99", "steam_score": "Very Positive", "steam_positive_pct": 91.6, "steam_total": 140767, "mc_overall_score": 84, "mc_sentiment": "Generally favorable", "mc_review_count": 59, "mc_url": "https://www.metacritic.com/game/darkest-dungeon/"}, {"thread_name": "A Plague Tale: Requiem", "steam_name": "A Plague Tale: Requiem", "steam_id": 1182900, "steam_url": "https://store.steampowered.com/app/1182900/", "steam_price": "$49.99", "steam_score": "Very Positive", "steam_positive_pct": 90.8, "steam_total": 20809, "mc_overall_score": 82, "mc_sentiment": "Generally favorable", "mc_review_count": 70, "mc_url": "https://www.metacritic.com/game/a-plague-tale-requiem/"}, {"thread_name": "The Riftbreaker", "steam_name": "The Riftbreaker", "steam_id": 780310, "steam_url": "https://store.steampowered.com/app/780310/", "steam_price": "$29.99", "steam_score": "Very Positive", "steam_positive_pct": 90.7, "steam_total": 22114, "mc_overall_score": 83, "mc_sentiment": "Generally favorable", "mc_review_count": 9, "mc_url": "https://www.metacritic.com/game/the-riftbreaker/"}, {"thread_name": "Potionomics", "steam_name": "Potionomics", "steam_id": 1874490, "steam_url": "https://store.steampowered.com/app/1874490/", "steam_price": "$24.99", "steam_score": "Very Positive", "steam_positive_pct": 90.6, "steam_total": 6970, "mc_overall_score": 80, "mc_sentiment": "Generally favorable", "mc_review_count": 11, "mc_url": "https://www.metacritic.com/game/potionomics/"}, {"thread_name": "Prey 2017", "steam_name": "Prey", "steam_id": 480490, "steam_url": "https://store.steampowered.com/app/480490/", "steam_price": "$29.99", "steam_score": "Very Positive", "steam_positive_pct": 90.5, "steam_total": 37741, "mc_overall_score": 79, "mc_sentiment": "Generally favorable", "mc_review_count": 76, "mc_url": "https://www.metacritic.com/game/prey/"}, {"thread_name": "Dread Delusion", "steam_name": "Dread Delusion", "steam_id": 1574240, "steam_url": "https://store.steampowered.com/app/1574240/", "steam_price": "$19.99", "steam_score": "Very Positive", "steam_positive_pct": 90.4, "steam_total": 4878, "mc_overall_score": 73, "mc_sentiment": "Mixed or average", "mc_review_count": 17, "mc_url": "https://www.metacritic.com/game/dread-delusion/"}, {"thread_name": "The Alters", "steam_name": "The Alters", "steam_id": 1601570, "steam_url": "https://store.steampowered.com/app/1601570/", "steam_price": "$34.99", "steam_score": "Very Positive", "steam_positive_pct": 90.1, "steam_total": 15324, "mc_overall_score": 85, "mc_sentiment": "Generally favorable", "mc_review_count": 67, "mc_url": "https://www.metacritic.com/game/the-alters/"}, {"thread_name": "Vanquish", "steam_name": "Vanquish", "steam_id": 460810, "steam_url": "https://store.steampowered.com/app/460810/", "steam_price": "$19.99", "steam_score": "Very Positive", "steam_positive_pct": 89.6, "steam_total": 6974, "mc_overall_score": 84, "mc_sentiment": "Generally favorable", "mc_review_count": 70, "mc_url": "https://www.metacritic.com/game/vanquish/"}, {"thread_name": "Nier: Automata", "steam_name": "NieR:Automata\u2122", "steam_id": 524220, "steam_url": "https://store.steampowered.com/app/524220/", "steam_price": "$39.99", "steam_score": "Very Positive", "steam_positive_pct": 88.4, "steam_total": 115075, "mc_overall_score": 88, "mc_sentiment": "Generally favorable", "mc_review_count": 107, "mc_url": "https://www.metacritic.com/game/nier-automata/"}, {"thread_name": "Mirror's Edge", "steam_name": "Mirror's Edge\u2122", "steam_id": 17410, "steam_url": "https://store.steampowered.com/app/17410/", "steam_price": "$19.99", "steam_score": "Very Positive", "steam_positive_pct": 87.6, "steam_total": 31189, "mc_overall_score": 79, "mc_sentiment": "Generally favorable", "mc_review_count": 82, "mc_url": "https://www.metacritic.com/game/mirrors-edge/"}, {"thread_name": "Void Bastards", "steam_name": "Void Bastards", "steam_id": 857980, "steam_url": "https://store.steampowered.com/app/857980/", "steam_price": "$29.99", "steam_score": "Very Positive", "steam_positive_pct": 86.8, "steam_total": 3888, "mc_overall_score": 81, "mc_sentiment": "Generally favorable", "mc_review_count": 30, "mc_url": "https://www.metacritic.com/game/void-bastards/"}, {"thread_name": "Escape from Duckov", "steam_name": "Escape From Duckov", "steam_id": 3167020, "steam_url": "https://store.steampowered.com/app/3167020/", "steam_price": "$17.99", "steam_score": "Very Positive", "steam_positive_pct": 85.7, "steam_total": 83427, "mc_overall_score": 77, "mc_sentiment": "Generally favorable", "mc_review_count": 15, "mc_url": "https://www.metacritic.com/game/escape-from-duckov/"}, {"thread_name": "The Last of Us", "steam_name": "The Last of Us\u2122 Part I", "steam_id": 1888930, "steam_url": "https://store.steampowered.com/app/1888930/", "steam_price": "$59.99", "steam_score": "Very Positive", "steam_positive_pct": 85.1, "steam_total": 65215, "mc_overall_score": 89, "mc_sentiment": "Generally favorable", "mc_review_count": 124, "mc_url": "https://www.metacritic.com/game/the-last-of-us-part-i/"}, {"thread_name": "THE FINALS", "steam_name": "THE FINALS", "steam_id": 2073850, "steam_url": "https://store.steampowered.com/app/2073850/", "steam_price": "Free", "steam_score": "Very Positive", "steam_positive_pct": 84.1, "steam_total": 113, "mc_overall_score": 80, "mc_sentiment": "Generally favorable", "mc_review_count": 17, "mc_url": "https://www.metacritic.com/game/the-finals/"}, {"thread_name": "Metal Eden", "steam_name": "METAL EDEN", "steam_id": 990380, "steam_url": "https://store.steampowered.com/app/990380/", "steam_price": "$19.99", "steam_score": "Very Positive", "steam_positive_pct": 83.9, "steam_total": 1916, "mc_overall_score": 73, "mc_sentiment": "Mixed or average", "mc_review_count": 27, "mc_url": "https://www.metacritic.com/game/metal-eden/"}, {"thread_name": "Kynseed", "steam_name": "Kynseed", "steam_id": 758870, "steam_url": "https://store.steampowered.com/app/758870/", "steam_price": "$24.99", "steam_score": "Very Positive", "steam_positive_pct": 83.1, "steam_total": 3506, "mc_overall_score": 89, "mc_sentiment": "Generally favorable", "mc_review_count": 7, "mc_url": "https://www.metacritic.com/game/kynseed/"}, {"thread_name": "Ghostrunner", "steam_name": "Ghostrunner 2", "steam_id": 2144740, "steam_url": "https://store.steampowered.com/app/2144740/", "steam_price": "$7.99", "steam_score": "Very Positive", "steam_positive_pct": 81.0, "steam_total": 7989, "mc_overall_score": 80, "mc_sentiment": "Generally favorable", "mc_review_count": 51, "mc_url": "https://www.metacritic.com/game/ghostrunner-2/"}, {"thread_name": "Yakuza 0", "steam_name": "Yakuza 0 Director's Cut", "steam_id": 2988580, "steam_url": "https://store.steampowered.com/app/2988580/", "steam_price": "$49.99", "steam_score": "Very Positive", "steam_positive_pct": 80.5, "steam_total": 1621, "mc_overall_score": 85, "mc_sentiment": "Generally favorable", "mc_review_count": 94, "mc_url": "https://www.metacritic.com/game/yakuza-0/"}, {"thread_name": "Returnal", "steam_name": "Returnal\u2122", "steam_id": 1649240, "steam_url": "https://store.steampowered.com/app/1649240/", "steam_price": "$59.99", "steam_score": "Mostly Positive", "steam_positive_pct": 79.9, "steam_total": 6603, "mc_overall_score": 86, "mc_sentiment": "Generally favorable", "mc_review_count": 126, "mc_url": "https://www.metacritic.com/game/returnal/"}, {"thread_name": "Ninja Gaiden 2 Black", "steam_name": "NINJA GAIDEN 2 Black", "steam_id": 3287520, "steam_url": "https://store.steampowered.com/app/3287520/", "steam_price": "$49.99", "steam_score": "Mostly Positive", "steam_positive_pct": 78.2, "steam_total": 3286, "mc_overall_score": 80, "mc_sentiment": "Generally favorable", "mc_review_count": 23, "mc_url": "https://www.metacritic.com/game/ninja-gaiden-2-black/"}, {"thread_name": "Outward", "steam_name": "Outward", "steam_id": 794260, "steam_url": "https://store.steampowered.com/app/794260/", "steam_price": "$39.99", "steam_score": "Mostly Positive", "steam_positive_pct": 72.9, "steam_total": 24625, "mc_overall_score": 67, "mc_sentiment": "Mixed or average", "mc_review_count": 20, "mc_url": "https://www.metacritic.com/game/outward/"}, {"thread_name": "Monster Hunter Wilds", "steam_name": "Monster Hunter Wilds", "steam_id": 2246340, "steam_url": "https://store.steampowered.com/app/2246340/", "steam_price": "$29.99", "steam_score": "Mixed", "steam_positive_pct": 52.6, "steam_total": 200994, "mc_overall_score": 88, "mc_sentiment": "Generally favorable", "mc_review_count": 110, "mc_url": "https://www.metacritic.com/game/monster-hunter-wilds/"}, {"thread_name": "Control", "steam_name": "CONTROL Resonant", "steam_id": 3669870, "steam_url": "https://store.steampowered.com/app/3669870/", "steam_price": "$59.99", "steam_score": "No user reviews", "steam_positive_pct": null, "steam_total": 0, "mc_overall_score": 82, "mc_sentiment": "Generally favorable", "mc_review_count": 70, "mc_url": "https://www.metacritic.com/game/control/"}, {"thread_name": "Alan Wake 2", "steam_name": "Alan Wake 2", "steam_id": 2458620, "steam_url": "https://store.steampowered.com/app/2458620/", "steam_price": "N/A", "steam_score": "No user reviews", "steam_positive_pct": null, "steam_total": 0, "mc_overall_score": 89, "mc_sentiment": "Generally favorable", "mc_review_count": 75, "mc_url": "https://www.metacritic.com/game/alan-wake-ii/"}];
+
+function steamColor(pct) {
+  if (pct == null) return 'var(--text-dim)';
+  if (pct >= 95) return '#66c0f4';
+  if (pct >= 85) return '#3fb950';
+  if (pct >= 70) return '#d29922';
+  return '#f85149';
+}
+function mcClass(s) {
+  if (s == null) return '';
+  if (s >= 90) return 'gold';
+  if (s >= 75) return 'green';
+  if (s >= 50) return '';
+  return 'red';
+}
+function mcColor(s) {
+  if (s == null) return 'var(--text-dim)';
+  if (s >= 90) return 'var(--metacritic-gold)';
+  if (s >= 75) return '#66c0f4';
+  if (s >= 50) return '#d29922';
+  return 'var(--bad)';
+}
+
+function renderRow(rank, g) {
+  const steamPct = g.steam_positive_pct;
+  const mc = g.mc_overall_score;
+  const sColor = steamColor(steamPct);
+  const mColor = mcColor(mc);
+  const steamPill = steamPct != null
+    ? `<div class="pill steam"><span class="pct">${steamPct.toFixed(1)}%</span><span class="lbl">${formatCount(g.steam_total)}</span></div>`
+    : `<div class="pill none">—</div>`;
+  const mcPill = mc != null
+    ? `<div class="pill mc ${mcClass(mc)}">${mc}</div>`
+    : `<div class="pill none">unrated</div>`;
+  const priceHtml = g.steam_price === 'Free' || g.steam_price === 'N/A'
+    ? `<div class="price ${g.steam_price === 'Free' ? 'free' : ''}">${g.steam_price}</div>`
+    : `<div class="price">${g.steam_price}</div>`;
+  const bars = `
+    <div class="score-cell">
+      <div class="bar"><div class="bar-fill" style="width:${steamPct || 0}%;background:${sColor}"></div></div>
+      <div class="bar"><div class="bar-fill" style="width:${mc || 0}%;background:${mColor}"></div></div>
+    </div>`;
+  const links = [];
+  if (g.steam_url) links.push(`<a href="${g.steam_url}" target="_blank" rel="noopener">Steam ↗</a>`);
+  if (g.mc_url) links.push(`<a href="${g.mc_url}" target="_blank" rel="noopener">Metacritic ↗</a>`);
+
+  return `
+    <div class="game-row" data-name="${g.steam_name.toLowerCase()}">
+      <div class="rank">${rank}</div>
+      <div class="game-info">
+        <div class="game-name">${escapeHtml(g.steam_name)}</div>
+        <div class="game-links">${links.join('')}</div>
+      </div>
+      <div>${steamPill}</div>
+      <div>${mcPill}</div>
+      ${bars}
+      ${priceHtml}
+    </div>`;
+}
+function formatCount(n) {
+  if (!n) return '';
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M reviews';
+  if (n >= 1000) return (n/1000).toFixed(0) + 'k reviews';
+  return n + ' reviews';
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+let currentSort = 'steam';
+let currentFilter = '';
+
+function sortGames(arr, key) {
+  const a = [...arr];
+  if (key === 'steam') {
+    a.sort((x,y) => (y.steam_positive_pct || -1) - (x.steam_positive_pct || -1));
+  } else if (key === 'mc') {
+    a.sort((x,y) => (y.mc_overall_score || -1) - (x.mc_overall_score || -1));
+  } else if (key === 'name') {
+    a.sort((x,y) => x.steam_name.localeCompare(y.steam_name));
+  }
+  return a;
+}
+
+function applyFilters() {
+  let arr = GAMES;
+  if (currentFilter) {
+    const q = currentFilter.toLowerCase();
+    arr = arr.filter(g => g.steam_name.toLowerCase().includes(q));
+  }
+  arr = sortGames(arr, currentSort);
+  const list = document.getElementById('games-list');
+  if (!arr.length) {
+    list.innerHTML = '<div class="empty">No matches.</div>';
+    return;
+  }
+  list.innerHTML = arr.map((g, i) => renderRow(i + 1, g)).join('');
+}
+
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSort = btn.dataset.sort;
+    applyFilters();
+  });
+});
+document.getElementById('search-input').addEventListener('input', e => {
+  currentFilter = e.target.value.trim();
+  applyFilters();
+});
+
+// Stats
+document.getElementById('stat-games').textContent = GAMES.length;
+const fullyRated = GAMES.filter(g => g.steam_positive_pct != null && g.mc_overall_score != null).length;
+document.getElementById('stat-rated').textContent = fullyRated;
+
+applyFilters();
+</script>
+</body>
+</html>
